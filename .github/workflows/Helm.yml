@@ -3,7 +3,7 @@ name: 'Helm'
 on:
   push:
     branches:
-    - "**-feature-1"
+    - "main"
   pull_request:
 
 permissions:
