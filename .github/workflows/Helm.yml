@@ -13,10 +13,10 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v1
 
     - name: 'Deploy'
-      uses: 'deliverybot/helm@v2'
+      uses: 'deliverybot/helm@v1'
       with:
         release: 'nginx'
         namespace: 'default'
