@@ -20,7 +20,7 @@ jobs:
       with:
         release: 'nginx'
         namespace: 'default'
-        chart: 'app'
+        chart: 'zelar'
         token: '${{ github.token }}'
         values: |
           name: foobar
