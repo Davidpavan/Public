@@ -10,38 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  deployment:
-    runs-on: 'ubuntu-latest'
+  create-cluster:
+    runs-on: ubuntu-latest
     steps:
-    - name: 'Checkout'
-      uses: 'actions/checkout@v1'
-
-    - name: Install helm
-      run:  |
-        curl -sSLo get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get
-        chmod 700 get_helm.sh
-        ./get_helm.sh
-        helm init --client-only
-    
-    - name: Add dependency chart repos
-      run:  |
-        helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-        helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-
-
-    - name: 'Deploy'
-      uses: 'deliverybot/helm@master'
-      with:
-        release: 'nginx'
-        namespace: 'default'
-        chart: 'zelar'
-        token: '${{ github.token }}'
-        values: |
-          name: foobar
-        value-files: >-
-         [
-          "values.yaml", 
-          "values.production.yaml"
-         ]
-      env:
-        KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.3.0
