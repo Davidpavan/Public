@@ -7,10 +7,12 @@ on:
   pull_request:
     branches:
       - main
-  workflow_run:
-    workflows: [Helm_Template, Helm_Lint]
-    types:
-      - completed
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Job to run.'
+        required: true
+        default: 'Helm_Deploy'
 
 permissions:
   contents: read
