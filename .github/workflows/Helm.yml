@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: Setting_up_kind_environment
     steps:
+      - uses: actions/checkout@master
       - name: Helm Lint
         run: |
          helm install --dry-run --debug zelar zelar 
