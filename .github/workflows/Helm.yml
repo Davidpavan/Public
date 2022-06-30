@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   Helm_Template:
+    environment: 'dev'
     runs-on: ubuntu-latest
 #     if: ${{ github.event.inputs.job == 'Helm_Template'}}
     steps:
@@ -45,6 +46,7 @@ jobs:
   Helm_Deploy:
     needs: [Helm_Template, Helm_Lint]
     if: ${{ github.event.inputs.job == ' Helm_Lint'}}
+    environment: 'prod'
     runs-on: ubuntu-latest
     steps:
       - uses: helm/kind-action@v1.3.0
