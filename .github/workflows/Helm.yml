@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  Setting_up_kind_environment:
+  Helm_Template:
     runs-on: ubuntu-latest
     steps:
       #- name: Create k8s Kind Cluster
@@ -29,7 +29,7 @@ jobs:
         run: |
          helm install --dry-run --debug zelar zelar
   Helm_Deploy:
-    needs: [Setting_up_kind_environment, Helm_Lint]
+    needs: [Helm_Template, Helm_Lint]
     runs-on: ubuntu-latest
     steps:
       - uses: helm/kind-action@v1.3.0
