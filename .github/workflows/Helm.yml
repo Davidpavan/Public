@@ -15,6 +15,7 @@ jobs:
     steps:
       #- name: Create k8s Kind Cluster
         #uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
       - name: kind 
         run: |
          kind create cluster --wait 300s
