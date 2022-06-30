@@ -24,3 +24,4 @@ jobs:
          kubectl get pods -n kube-system
          helm install --dry-run --debug --generate-name zelar 
          helm install zelar --generate-name
+         helm lint --quiet
