@@ -21,6 +21,6 @@ jobs:
          kind create cluster --wait 300s
          kubectl wait --for=condition=Ready pods --all --namespace kube-system
          kubectl cluster-info
-         kubectl get pods -n kube-system 
-         helm lint zelar
+         kubectl get pods -n kube-system
+         helm install --dry-run --debug zelar
          helm install zelar --generate-name
