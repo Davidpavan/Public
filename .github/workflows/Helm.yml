@@ -45,7 +45,7 @@ jobs:
 #         run: echo "${{ github.event.inputs.job }} triggered!"
   Helm_Deploy:
     needs: [Helm_Template, Helm_Lint]
-    if: ${{ github.event.inputs.job == ' Helm_Lint'}}
+  #  if: ${{ github.event.inputs.job == ' Helm_Lint'}}
     environment: 'prod'
     runs-on: ubuntu-latest
     steps:
