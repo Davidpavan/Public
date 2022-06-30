@@ -20,7 +20,7 @@ permissions:
 jobs:
   Helm_Template:
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.job == 'Helm_Template'}}
+#     if: ${{ github.event.inputs.job == 'Helm_Template'}}
     steps:
       #- name: Create k8s Kind Cluster
       - uses: helm/kind-action@v1.3.0
@@ -28,11 +28,11 @@ jobs:
       - name: kind 
         run: |
          kubectl get pods -n kube-system
-      - name: ${{ github.event.inputs.job }} - step 1
-        run: echo "${{ github.event.inputs.job }} triggered!"
+#       - name: ${{ github.event.inputs.job }} - step 1
+#         run: echo "${{ github.event.inputs.job }} triggered!"
   Helm_Lint:
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.job == ' Helm_Lint'}}
+#     if: ${{ github.event.inputs.job == ' Helm_Lint'}}
     #needs: Setting_up_kind_environment
     steps:
       - uses: helm/kind-action@v1.3.0
@@ -40,8 +40,8 @@ jobs:
       - name: Helm Lint
         run: |
          helm install --dry-run --debug zelar zelar
-      - name: ${{ github.event.inputs.job }} - step 1
-        run: echo "${{ github.event.inputs.job }} triggered!"
+#       - name: ${{ github.event.inputs.job }} - step 1
+#         run: echo "${{ github.event.inputs.job }} triggered!"
   Helm_Deploy:
     needs: [Helm_Template, Helm_Lint]
     if: ${{ github.event.inputs.job == ' Helm_Lint'}}
