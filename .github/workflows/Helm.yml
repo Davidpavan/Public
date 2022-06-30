@@ -7,12 +7,6 @@ on:
   pull_request:
     branches:
       - main
-#   workflow_dispatch:
-#     inputs:
-#       job:
-#         description: 'Job to run.'
-#         required: true
-#         default: 'Helm_Deploy'
 
 permissions:
   contents: read
@@ -21,7 +15,6 @@ jobs:
   Helm_Template:
     runs-on: ubuntu-latest
     steps:
-      #- name: Create k8s Kind Cluster
       - uses: helm/kind-action@v1.3.0
       - uses: actions/checkout@master
       - name: kind 
@@ -37,7 +30,7 @@ jobs:
         run: |
          helm install --dry-run --debug zelar zelar
   Helm_Deploy:
-    needs: [Helm_Template, Helm_Lint]
+    needs: [Helm_Template, Helm_Lint, K8s_Static_code_analysis]
     environment: 'prod'
     runs-on: 'ubuntu-latest'
     steps:
@@ -46,4 +39,17 @@ jobs:
       - name: Helm Lint
         run: |
          helm install --dry-run --debug zelar zelar 
+         
+  K8s_Static_code_analysis :
+    environment: 'prod'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup polaris
+        uses: fairwindsops/polaris/.github/actions/setup-polaris@master
+        with:
+         version: 5.0.0
+      - name: Use command
+        run: polaris version
 
+  
