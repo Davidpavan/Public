@@ -30,8 +30,6 @@ jobs:
   Helm_Lint:
     environment: 'dev'
     runs-on: ubuntu-latest
-#     if: ${{ github.event.inputs.job == ' Helm_Lint'}}
-    needs: Helm_Template
     steps:
       - uses: helm/kind-action@v1.3.0
       - uses: actions/checkout@master
