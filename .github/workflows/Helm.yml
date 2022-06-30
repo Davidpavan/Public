@@ -28,5 +28,6 @@ jobs:
          helm install zelar --generate-name
       - name: Helm Deploy 
         run: |
-         helm install --dry-run --debug --generate-name zelar 
+         helm install  --generate-name zelar 
+         kubectl get pods -A
           
