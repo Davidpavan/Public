@@ -19,7 +19,6 @@ permissions:
 
 jobs:
   Helm_Template:
-    environment: 'dev'
     runs-on: ubuntu-latest
 #     if: ${{ github.event.inputs.job == 'Helm_Template'}}
     steps:
@@ -32,9 +31,10 @@ jobs:
 #       - name: ${{ github.event.inputs.job }} - step 1
 #         run: echo "${{ github.event.inputs.job }} triggered!"
   Helm_Lint:
+    environment: 'dev'
     runs-on: ubuntu-latest
 #     if: ${{ github.event.inputs.job == ' Helm_Lint'}}
-    needs: [Helm_Template]
+    needs: Helm_Template
     steps:
       - uses: helm/kind-action@v1.3.0
       - uses: actions/checkout@master
@@ -47,7 +47,7 @@ jobs:
     needs: [Helm_Template, Helm_Lint]
   #  if: ${{ github.event.inputs.job == ' Helm_Lint'}}
     environment: 'prod'
-    runs-on: ubuntu-latest
+    runs-on: 'ubuntu-latest'
     steps:
       - uses: helm/kind-action@v1.3.0
       - uses: actions/checkout@master
