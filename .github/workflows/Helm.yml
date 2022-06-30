@@ -18,7 +18,6 @@ jobs:
       - name: kind 
         run: |
          kind create cluster --wait 300s
-         export KUBECONFIG="$(kind get kubeconfig-path)"
          kubectl wait --for=condition=Ready pods --all --namespace kube-system
          kubectl cluster-info
          kubectl get pods -n kube-system 
