@@ -22,4 +22,4 @@ jobs:
          kubectl cluster-info
          kubectl get pods -n kube-system 
          ls 
-         helm install zelar  .
+         helm install ./zelar
