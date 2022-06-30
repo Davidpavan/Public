@@ -52,7 +52,6 @@ jobs:
         run: |
          polaris audit --audit-path zelar \
          --set-exit-code-on-danger \
-         --set-exit-code-below-score 90 \
-         --format=pretty
+         --set-exit-code-below-score 90 
 
   
