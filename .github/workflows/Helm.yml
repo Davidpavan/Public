@@ -50,8 +50,6 @@ jobs:
          version: 5.0.0
       - name: Use command
         run: |
-         polaris audit --audit-path zelar \
-         --set-exit-code-on-danger \
-         --set-exit-code-below-score 90 
+         polaris audit --audit-path zelar --format=pretty
 
   
