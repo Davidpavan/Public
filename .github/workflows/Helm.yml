@@ -21,7 +21,7 @@ jobs:
         run: |
          kubectl get pods -n kube-system
   Helm_Lint:
-    environment: 'dev'
+    #environment: 'dev'
     runs-on: ubuntu-latest
     steps:
       - uses: helm/kind-action@v1.3.0
