@@ -41,7 +41,7 @@ jobs:
          helm install --dry-run --debug zelar zelar 
          
   K8s_Static_code_analysis:
-    needs: [Helm_Lint]
+    needs: [Helm_Lint, Helm_Template]
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v2
@@ -87,7 +87,7 @@ jobs:
 #         with:
 #           sarif_file: results.sarif
   kubespec:
-    needs: [K8s_Static_code_analysis]
+    needs: [Helm_Lint, Helm_Template]
     name: Kubesec
     runs-on: ubuntu-20.04
     permissions:
