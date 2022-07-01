@@ -53,7 +53,7 @@ jobs:
         run: |
          polaris audit --audit-path zelar --format=pretty
   Helm-Audit:
-    needs: [kubespec, Helm_Template, Helm_Lint, K8s_Static_code_analysis]
+    needs: [Helm_Template, Helm_Lint, K8s_Static_code_analysis]
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -87,7 +87,7 @@ jobs:
 #         with:
 #           sarif_file: results.sarif
   kubespec:
-    needs: [Helm-Audit]
+    needs: [K8s_Static_code_analysis]
     name: Kubesec
     runs-on: ubuntu-20.04
     permissions:
