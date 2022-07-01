@@ -30,7 +30,7 @@ jobs:
         run: |
          helm install --dry-run --debug zelar zelar
   Helm_Deploy:
-    needs: [Helm_Template, Helm_Lint, K8s_Static_code_analysis, Helm-Audit, kubespec]
+    needs: [Helm_Template, Helm_Lint, K8s_Static_code_analysis, Helm-Audit]
     environment: 'prod'
     runs-on: 'ubuntu-latest'
     steps:
