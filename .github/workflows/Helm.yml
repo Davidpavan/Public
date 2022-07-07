@@ -30,7 +30,7 @@ jobs:
         run: |
          helm install --dry-run --debug zelar zelar
   Helm_Deploy:
-    needs: [Prelease-Test]
+    needs: [Load_testing]
     environment: 'prod'
     runs-on: 'ubuntu-latest'
     steps:
@@ -125,7 +125,8 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
           sudo apt-get update
           sudo apt-get install k6
-          k6 run performance-test.js
+          k6 cloud login -t 52cb78be856ae78f46e18bb512ad275757dfec00ff28dd9754ae3387273107e5
+          k6 run  performance-test.js
 
   kubespec:
     needs: [Helm_Lint, Helm_Template]
