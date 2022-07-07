@@ -30,7 +30,7 @@ jobs:
         run: |
          helm install --dry-run --debug zelar zelar
   Helm_Deploy:
-    needs: [Helm-Audit]
+    needs: [Prelease-Test]
     environment: 'prod'
     runs-on: 'ubuntu-latest'
     steps:
