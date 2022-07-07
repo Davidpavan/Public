@@ -86,6 +86,19 @@ jobs:
 #         uses: github/codeql-action/upload-sarif@v2
 #         with:
 #           sarif_file: results.sarif
+  Prelease-Test:
+    needs: [ Helm-Audit]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
+      - name: kind 
+        run: |
+         pip install robotframework-kubelibrary
+         pip install robotframework-requests
+         git clone https://github.com/devopsspiral/KubeLibrary.git
+         cd KubeLibrary
+         robot -e prerelease testcases
   kubespec:
     needs: [Helm_Lint, Helm_Template]
     name: Kubesec
