@@ -1,12 +1,13 @@
-import{ sleep } from 'k6';
 import http from 'k6/http';
-
-export let options = {
-  duration : '1m',
-  vus : 50,
+import { sleep } from 'k6';
+export const options = {
+  vus: 20,
+  duration: '30s',	
+  ext: {
+    loadimpact: {
+      projectID: 3592529,
+      // Test runs with the same name groups test runs together
+      name: "sqd-fe"
+    }
+  }
 };
-
-export default function() {
-  http.get('http://test.k6.io/contacts.php');
-  sleep(3);
-}
