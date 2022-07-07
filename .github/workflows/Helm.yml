@@ -87,7 +87,7 @@ jobs:
 #         with:
 #           sarif_file: results.sarif
   Prelease-Test:
-    needs: [ Helm-Audit]
+    needs: [ Helm-Audit, Docker_image_scanning]
     runs-on: ubuntu-latest
     steps:
       - uses: helm/kind-action@v1.3.0
