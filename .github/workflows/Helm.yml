@@ -99,7 +99,6 @@ jobs:
          git clone https://github.com/devopsspiral/KubeLibrary.git
          cd KubeLibrary
   helm_file:
-    needs: [ Helm-Audit, Docker_image_scanning]
     runs-on: ubuntu-latest
     steps:
       #- uses: helm/kind-action@v1.3.0
