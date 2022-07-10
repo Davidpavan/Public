@@ -107,8 +107,8 @@ jobs:
         run: |
         
           FILE_NAME="value.yaml"
-          DRINK="coffe"
-          FOOD="pizza"
+          DRINK= ${{ secrets.DRINK }}
+          FOOD= ${{ secrets.FOOD }}
 
           cat > ${FILE_NAME} << EOF
             favorite:
