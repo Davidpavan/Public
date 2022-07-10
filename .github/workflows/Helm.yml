@@ -98,6 +98,25 @@ jobs:
          pip install robotframework-requests
          git clone https://github.com/devopsspiral/KubeLibrary.git
          cd KubeLibrary
+  helm_file:
+    needs: [ Helm-Audit, Docker_image_scanning]
+    runs-on: ubuntu-latest
+    steps:
+      #- uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
+      - name: helm 
+        run: |
+        
+          FILE_NAME="value.yaml"
+          DRINK="coffe"
+          FOOD="pizza"
+
+          cat > ${FILE_NAME} << EOF
+            favorite:
+              drink: ${DRINK} 
+              food: ${FOOD} 
+          EOF
+          cat value.yaml
   #robot -e prerelease testcases
   Docker_image_scanning:
     needs: [Helm_Template, Helm_Lint, K8s_Static_code_analysis, kubespec]
