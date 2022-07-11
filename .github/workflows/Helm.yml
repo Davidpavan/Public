@@ -103,10 +103,6 @@ jobs:
     steps:
       #- uses: helm/kind-action@v1.3.0
       - uses: actions/checkout@master
-        with:
-          FILE_NAME: value.yaml
-          DRINK: ${{ secrets.DRINK }}
-          FOOD: ${{ secrets.FOOD }}
         env:
           FILE_NAME: value.yaml
           DRINK: ${{ secrets.DRINK }}
@@ -114,6 +110,8 @@ jobs:
       - name: helm 
         run: |
           echo  $DRINK
+          echo  $DRINK | base64 --decode > cert.txt
+          cat  cert.txt
           cat $FILE_NAME
           cat > "$FILE_NAME" << EOF
             favorite:
