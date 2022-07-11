@@ -103,13 +103,14 @@ jobs:
     steps:
       #- uses: helm/kind-action@v1.3.0
       - uses: actions/checkout@master
+        with:
+          DRINK: ${{ secrets.DRINK}}
       - name: helm 
         run: |
         
-          DRINK= ${{ secrets.DRINK}}
-          echo  $DRINK | base64 --decode > $DRINK
-          cat  cert.txt
-          cat $FILE_NAME
+          echo "$DRINK"
+          FILE_NAME="value.yaml"
+          FOOD=pizza
           cat > "$FILE_NAME" << EOF
             favorite:
               drink: $DRINK
