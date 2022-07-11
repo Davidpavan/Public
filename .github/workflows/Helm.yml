@@ -105,11 +105,9 @@ jobs:
       - uses: actions/checkout@master
         with:
           DRINK: ${{ secrets.DRINK}}
+          FOOD: ${{ secrets.FOOD}}
       - name: helm 
         run: |
-        
-          AWS_ACCESS_KEY_ID=${{ secrets.DRINK}}
-          echo "AWS_ACCESS_KEY_ID = $AWS_ACCESS_KEY_ID"
           FILE_NAME="value.yaml"
           DRINK="${{ secrets.DRINK}}"
           FOOD=pizza
