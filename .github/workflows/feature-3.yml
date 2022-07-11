@@ -1,0 +1,177 @@
+name: 'Feature-3'
+
+on:
+  push:
+    branches:
+      - '**-feature-3'
+permissions:
+  contents: read
+
+jobs:
+  Helm_Template:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
+      - name: kind 
+        run: |
+         kubectl get pods -n kube-system
+  Helm_Lint:
+    #environment: 'dev'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
+      - name: Helm Lint
+        run: |
+         helm install --dry-run --debug zelar zelar
+  Helm_Deploy:
+    needs: [Load_testing]
+    environment: 'prod'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
+      - name: Helm Lint
+        run: |
+         helm install --dry-run --debug zelar zelar 
+         
+  K8s_Static_code_analysis:
+    needs: [Helm_Lint, Helm_Template]
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup polaris
+        uses: fairwindsops/polaris/.github/actions/setup-polaris@master
+        with:
+         version: 5.0.0
+      - name: Use command
+        run: |
+         polaris audit --audit-path zelar --format=pretty
+  Helm-Audit:
+    needs: [Helm_Template, Helm_Lint, K8s_Static_code_analysis, kubespec]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+       - name: Checkout repo
+         uses: actions/checkout@v2 #actions/checkout@master
+       - name: Run Checkov action
+         id: checkov
+         uses: bridgecrewio/checkov-action@master
+         with:
+            directory: zelar/
+            #file: example/tfplan.json # optional: provide the path for resource to be scanned. This will override the directory if both are provided.
+            check: CKV_K8S_15	 # optional: run only a specific check_id. can be comma separated list
+            skip_check: CKV_K8S_2 # CKV_K8S_8 # optional: skip a specific check_id. can be comma separated list
+            quiet: true # optional: display only failed checks
+            #soft_fail: true # optional: do not return an error code if there are failed checks
+            framework: helm # optional: run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
+            output_format: sarif # optional: the output format, one of: cli, json, junitxml, github_failed_only, or sarif. Default: sarif
+            #download_external_modules: true # optional: download external terraform modules from public git repositories and terraform registry
+            log_level: DEBUG # optional: set log level. Default WARNING
+            #config_file: path/this_file
+#           baseline: cloudformation/.checkov.baseline # optional: Path to a generated baseline file. Will only report results not in the baseline.
+#           container_user: 1000 # optional: Define what UID and / or what GID to run the container under to prevent permission issues
+#         with:
+#           directory: zelar/templates 
+#           framework: helm
+#       - name: Upload Kubesec scan results to GitHub Security tab
+#         uses: github/codeql-action/upload-sarif@v2
+#         with:
+#           sarif_file: results.sarif
+  Prelease-Test:
+    needs: [ Helm-Audit, Docker_image_scanning]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
+      - name: kind 
+        run: |
+         pip install robotframework-kubelibrary
+         pip install robotframework-requests
+         git clone https://github.com/devopsspiral/KubeLibrary.git
+         cd KubeLibrary
+  helm_file:
+    runs-on: ubuntu-latest
+    steps:
+      #- uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
+        with:
+          DRINK: ${{ secrets.DRINK}}
+          FOOD: ${{ secrets.FOOD}}
+      - name: helm 
+        run: |
+          FILE_NAME="value.yaml"
+          DRINK="${{ secrets.DRINK}}"
+          FOOD=pizza
+          cat > "$FILE_NAME" << EOF
+            favorite:
+              drink: $DRINK
+              food: $FOOD
+          EOF
+          cat value.yaml
+  #robot -e prerelease testcases
+  Docker_image_scanning:
+    needs: [Helm_Template, Helm_Lint, K8s_Static_code_analysis, kubespec]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
+      - name: kind 
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy
+          trivy image nginx
+  Load_testing:
+    needs: [Prelease-Test, Docker_image_scanning, Helm-Audit]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: helm/kind-action@v1.3.0
+      - uses: actions/checkout@master
+      - name: kind 
+        run: |
+          sudo apt-get update && sudo apt-get install -y ca-certificates gnupg2
+          # delete existing key
+          sudo apt-key del k6
+          # import the key the recommended way
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          # update the repository
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+          k6 cloud login -t 52cb78be856ae78f46e18bb512ad275757dfec00ff28dd9754ae3387273107e5
+          k6 run  performance-test.js
+  kubespec:
+    needs: [Helm_Lint, Helm_Template]
+    name: Kubesec
+    runs-on: ubuntu-20.04
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run kubesec scanner
+        uses: controlplaneio/kubesec-action@43d0ddff5ffee89a6bb9f29b64cd865411137b14
+        with:
+          input: zelar/templates/deployment.yaml   # specify configuration file to scan here
+          format: template
+          template: template/sarif.tpl
+          output: kresults.sarif
+          exit-code: "0"
+
+#       - name: Upload Kubesec scan results to GitHub Security tab
+#         uses: github/codeql-action/upload-sarif@v2
+#         with:
+#           sarif_file: kresults.sarif
