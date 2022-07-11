@@ -109,11 +109,11 @@ jobs:
           FOOD: ${{ secrets.FOOD }}
       - name: helm 
         run: |
-          cat $FILE_NAME
-          cat > $FILE_NAME << EOF
+          cat "$FILE_NAME"
+          cat > "$FILE_NAME" << EOF
             favorite:
-              drink: ${DRINK} 
-              food: ${FOOD} 
+              drink: $DRINK
+              food: $FOOD
           EOF
           cat value.yaml
   #robot -e prerelease testcases
