@@ -108,8 +108,8 @@ jobs:
       - name: helm 
         run: |
         
-          echo "$DRINK"
           FILE_NAME="value.yaml"
+          DRINK="${{ secrets.DRINK}}"
           FOOD=pizza
           cat > "$FILE_NAME" << EOF
             favorite:
