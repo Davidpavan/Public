@@ -103,12 +103,12 @@ jobs:
     steps:
       #- uses: helm/kind-action@v1.3.0
       - uses: actions/checkout@master
+        env:
+          FILE_NAME: value.yaml
+          DRINK: ${{ secrets.DRINK }}
+          FOOD: ${{ secrets.FOOD }}
       - name: helm 
         run: |
-        
-          FILE_NAME="value.yaml"
-          DRINK= ${{ secrets.DRINK }}
-          FOOD= ${{ secrets.FOOD }}
 
           cat > ${FILE_NAME} << EOF
             favorite:
